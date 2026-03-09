@@ -12,14 +12,6 @@ const TodoItem = ({ id, title, isDone }) => {
     disappearingTaskId,
   } = useContext(TodosContext);
 
-  console.log({
-    appearingTaskId,
-    disappearingTaskId,
-    id,
-    isAppearing: appearingTaskId === id,
-    isDisappearing: disappearingTaskId === id,
-  });
-
   return (
     <li
       style={ { border: disappearingTaskId === id ? "2px solid red" : "none" } }

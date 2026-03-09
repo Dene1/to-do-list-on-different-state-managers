@@ -1,7 +1,7 @@
 import Field from "./Field";
 import Button from "./Button";
 import { useContext, useState } from "react";
-import { TodosContext, TodosProvider } from "../TodosContext";
+import { TodosContext } from "../TodosContext";
 
 const AddTaskForm = () => {
   const { addTask, searchRef } = useContext(TodosContext);
@@ -12,7 +12,7 @@ const AddTaskForm = () => {
   const isNewTaskTitle = clearNewTaskTitle.length === 0;
 
   function onSubmit(e) {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!isNewTaskTitle) {
       addTask(clearNewTaskTitle);

@@ -1,11 +1,14 @@
 import Todo from "../components/Todo"
 import { TodosProvider } from "../TodosContext"
+import ThemeContext from "../ThemeContext.jsx"
 
 const TasksPage = () => {
 
   return (
     <TodosProvider>
-      <Todo />
+      <ThemeContext>
+        <Todo />
+      </ThemeContext>
     </TodosProvider>
   )
 }
