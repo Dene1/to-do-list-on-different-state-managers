@@ -1,30 +1,25 @@
-import { useContext } from "react";
-import { TodosContext } from "../TodosContext";
 import RouterLink from "./RouterLink";
+import { useTasksStore } from "@/store/index.js"
+import { useFirstIncompliteTaskId } from "@/hooks/useFirstIncompliteTaskId.js"
 
-const TodoItem = ({ id, title, isDone }) => {
-  const {
-    changeCheck,
-    deleteTask,
-    firstIncompliteTaskRef,
-    firstIncompliteTaskId,
-    appearingTaskId,
-    disappearingTaskId,
-  } = useContext(TodosContext);
+const TodoItem = ({
+                    id,
+                    title,
+                    isDone,
+                    firstIncompliteTaskRef
+                  }) => {
+  const changeCheck = useTasksStore(state => state.changeCheck);
+  const disappearingTaskId = useTasksStore(state => state.disappearingTaskId);
+  const appearingTaskId = useTasksStore(state => state.appearingTaskId);
+  const deleteTask = useTasksStore(state => state.deleteTask);
 
-  console.log({
-    appearingTaskId,
-    disappearingTaskId,
-    id,
-    isAppearing: appearingTaskId === id,
-    isDisappearing: disappearingTaskId === id,
-  });
+  const firstIncompliteTaskId = useFirstIncompliteTaskId();
 
   return (
     <li
       style={ { border: disappearingTaskId === id ? "2px solid red" : "none" } }
-      className={ `todo__item todo-item
-    ${ disappearingTaskId === id ? "is-disappearing" : "" } ${ appearingTaskId === id ? "is-appearing" : "" }` }
+      className={ `todo__item todo-item ${ disappearingTaskId === id ? "is-disappearing" : "" }
+       ${ appearingTaskId === id ? "is-appearing" : "" }` }
       ref={ id === firstIncompliteTaskId ? firstIncompliteTaskRef : null }>
       <input
         className="todo-item__checkbox"
@@ -47,7 +42,8 @@ const TodoItem = ({ id, title, isDone }) => {
         className="todo-item__delete-button"
         aria-label="Delete"
         title="Delete"
-        onClick={ () => deleteTask(id) }>
+        onClick={ () => deleteTask(id) }
+      >
         <svg
           width="20"
           height="20"

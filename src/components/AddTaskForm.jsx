@@ -1,22 +1,28 @@
 import Field from "./Field";
 import Button from "./Button";
-import { useContext, useState } from "react";
-import { TodosContext, TodosProvider } from "../TodosContext";
+import { useContext, useEffect, useRef, useState } from "react";
+import { useTasksStore } from "@/store/index.js"
 
 const AddTaskForm = () => {
-  const { addTask, searchRef } = useContext(TodosContext);
+  const addTask = useTasksStore(state => state.addTask);
+
+  const searchRef = useRef(null)
   const [error, setError] = useState("");
   const [newTaskTitle, setNewTaskTitle] = useState("");
 
   const clearNewTaskTitle = newTaskTitle.trim();
   const isNewTaskTitle = clearNewTaskTitle.length === 0;
 
+  useEffect(() => {
+    searchRef.current?.focus()
+  }, [])
+
   function onSubmit(e) {
     e.preventDefault();
 
     if (!isNewTaskTitle) {
       addTask(clearNewTaskTitle);
-      () => setNewTaskTitle("")
+      setNewTaskTitle("")
     }
   }
 

@@ -1,10 +1,10 @@
 import { memo, useMemo } from "react";
 import Button from "./Button";
-import { useContext } from "react";
-import { TodosContext } from "../TodosContext";
+import { useTasksStore } from "@/store/index.js"
 
 const TodoInfo = () => {
-  const { tasks, deleteAllTasks } = useContext(TodosContext);
+  const tasks = useTasksStore(state => state.tasks);
+  const deleteAllTasks = useTasksStore(state => state.deleteAllTasks);
 
   const total = tasks.length;
   const hasTasks = total > 0;
@@ -16,7 +16,7 @@ const TodoInfo = () => {
   return (
     <div className="todo__info">
       <div className="todo__total-tasks">
-        Total tasks:<span>{ total }</span> IsDone: { done }
+        Total tasks:<span>{ total }</span> IsDone:{ done }
       </div>
 
       { hasTasks && (

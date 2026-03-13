@@ -3,11 +3,11 @@ import SearchTaskForm from "./SearchTaskForm";
 import TodoInfo from "./TodoInfo";
 import TodoList from "./TodoList";
 import ButtonShow from "./ButtonShow";
-import { TodosContext } from "../TodosContext";
-import { useContext } from "react";
+import { useRef } from "react"
 
 const Todo = () => {
-  const { firstIncompliteTaskRef } = useContext(TodosContext);
+  const firstIncompliteTaskRef = useRef(null)
+
   const onClickRef = () => firstIncompliteTaskRef.current?.scrollIntoView({ behavior: "smooth" });
 
   return (
@@ -17,7 +17,7 @@ const Todo = () => {
       <SearchTaskForm />
       <TodoInfo />
       <ButtonShow onClickRef={ onClickRef } />
-      <TodoList />
+      <TodoList firstIncompliteTaskRef={ firstIncompliteTaskRef } />
     </div>
   );
 };

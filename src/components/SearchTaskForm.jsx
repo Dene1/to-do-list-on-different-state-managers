@@ -1,9 +1,8 @@
-import { useContext } from "react"
-import { TodosContext } from "../TodosContext"
+import { useTasksStore } from "@/store/index.js"
 
 const SearchTaskForm = () => {
-
-  const { searchTaskForm, searchTask } = useContext(TodosContext)
+  const searchTaskForm = useTasksStore(state => state.searchTaskForm)
+  const searchTask = useTasksStore(state => state.searchTask)
 
   return (
     <form className="todo__form">
@@ -21,7 +20,7 @@ const SearchTaskForm = () => {
           autoComplete="off"
           type="search"
           value={ searchTaskForm }
-          onChange={ (e) => searchTask(e) }
+          onChange={ searchTask }
         />
       </div>
     </form>
