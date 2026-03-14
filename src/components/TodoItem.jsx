@@ -1,6 +1,5 @@
 import RouterLink from "./RouterLink";
 import { useTasksStore } from "@/store/index.js"
-import { useFirstIncompliteTaskId } from "@/hooks/useFirstIncompliteTaskId.js"
 
 const TodoItem = ({
                     id,
@@ -12,15 +11,16 @@ const TodoItem = ({
   const disappearingTaskId = useTasksStore(state => state.disappearingTaskId);
   const appearingTaskId = useTasksStore(state => state.appearingTaskId);
   const deleteTask = useTasksStore(state => state.deleteTask);
+  const tasks = useTasksStore(state => state.tasks)
 
-  const firstIncompliteTaskId = useFirstIncompliteTaskId();
+  const firstIncompliteTaskId = () => tasks.find(task => !task.isDone)?.id
 
   return (
     <li
       style={ { border: disappearingTaskId === id ? "2px solid red" : "none" } }
       className={ `todo__item todo-item ${ disappearingTaskId === id ? "is-disappearing" : "" }
        ${ appearingTaskId === id ? "is-appearing" : "" }` }
-      ref={ id === firstIncompliteTaskId ? firstIncompliteTaskRef : null }>
+      ref={ id === firstIncompliteTaskId() ? firstIncompliteTaskRef : null }>
       <input
         className="todo-item__checkbox"
         id={ id }
