@@ -8,9 +8,7 @@ export const useTasksStore = create(devtools((set, get, api) => ({
       disappearingTaskId: null,
       appearingTaskId: null,
 
-      firstIncompliteTaskId: () => {
-        return get().tasks.find(task => !task.isDone)?.id
-      },
+      firstIncompliteTaskId: () => get().tasks.find(task => !task.isDone)?.id,
 
       fetchTasks: async () => {
         const tasks = await tasksApi.getAll()

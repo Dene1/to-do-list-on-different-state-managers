@@ -11,9 +11,8 @@ const TodoItem = ({
   const disappearingTaskId = useTasksStore(state => state.disappearingTaskId);
   const appearingTaskId = useTasksStore(state => state.appearingTaskId);
   const deleteTask = useTasksStore(state => state.deleteTask);
-  const tasks = useTasksStore(state => state.tasks)
 
-  const firstIncompliteTaskId = () => tasks.find(task => !task.isDone)?.id
+  const firstIncompliteTaskId = useTasksStore(state => state.firstIncompliteTaskId);
 
   return (
     <li
