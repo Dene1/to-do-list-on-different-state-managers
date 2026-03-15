@@ -1,7 +1,8 @@
 import RouterLink from "./RouterLink";
 import { useTasksStore } from "@/store/index.js"
 import { useShallow } from "zustand/react/shallow"
-import { useMemo } from "react"
+
+const filterTasks = (state => state.tasks.find(task => !task.isDone)?.id)
 
 const TodoItem = ({
                     id,
@@ -21,9 +22,7 @@ const TodoItem = ({
     deleteTask: state.deleteTask,
   })))
 
-  const firstIncompliteTaskId = useTasksStore(
-    state => state.tasks.find(task => !task.isDone)?.id
-  )
+  const firstIncompliteTaskId = useTasksStore(filterTasks)
 
   return (
     <li

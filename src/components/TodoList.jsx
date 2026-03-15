@@ -15,7 +15,6 @@ const TodoList = ({ firstIncompliteTaskRef }) => {
   if (!hasTasks) {
     return <div className="todo__empty-message">There are task not yet</div>;
   }
-  console.log(filteredTasks)
   if (!filteredTasks?.length) {
     return <div className="todo__empty-message">Task not found</div>;
   }
