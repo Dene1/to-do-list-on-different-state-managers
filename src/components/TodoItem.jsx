@@ -1,5 +1,7 @@
 import RouterLink from "./RouterLink";
 import { useTasksStore } from "@/store/index.js"
+import { useShallow } from "zustand/react/shallow"
+import { useMemo } from "react"
 
 const TodoItem = ({
                     id,
@@ -7,18 +9,34 @@ const TodoItem = ({
                     isDone,
                     firstIncompliteTaskRef
                   }) => {
-  const changeCheck = useTasksStore(state => state.changeCheck);
-  const disappearingTaskId = useTasksStore(state => state.disappearingTaskId);
-  const appearingTaskId = useTasksStore(state => state.appearingTaskId);
-  const deleteTask = useTasksStore(state => state.deleteTask);
-  const firstIncompliteTaskId = useTasksStore(state => state.firstIncompliteTaskId);
+  // const changeCheck = useTasksStore(state => state.changeCheck);
+  // const disappearingTaskId = useTasksStore(state => state.disappearingTaskId);
+  // const appearingTaskId = useTasksStore(state => state.appearingTaskId);
+  // const deleteTask = useTasksStore(state => state.deleteTask);
+  // const firstIncompliteTaskId = useTasksStore(state => state.firstIncompliteTaskId);
+
+  const {
+    changeCheck,
+    disappearingTaskId,
+    appearingTaskId,
+    deleteTask,
+  } = useTasksStore(useShallow(state => ({
+    changeCheck: state.changeCheck,
+    disappearingTaskId: state.disappearingTaskId,
+    appearingTaskId: state.appearingTaskId,
+    deleteTask: state.deleteTask,
+  })))
+
+  const firstIncompliteTaskId = useTasksStore(
+    state => state.tasks.find(task => !task.isDone)?.id
+  )
 
   return (
     <li
       style={ { border: disappearingTaskId === id ? "2px solid red" : "none" } }
       className={ `todo__item todo-item ${ disappearingTaskId === id ? "is-disappearing" : "" }
        ${ appearingTaskId === id ? "is-appearing" : "" }` }
-      ref={ id === firstIncompliteTaskId() ? firstIncompliteTaskRef : null }>
+      ref={ id === firstIncompliteTaskId ? firstIncompliteTaskRef : null }>
       <input
         className="todo-item__checkbox"
         id={ id }

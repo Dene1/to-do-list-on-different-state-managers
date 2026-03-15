@@ -8,8 +8,6 @@ export const useTasksStore = create(devtools((set, get, api) => ({
       disappearingTaskId: null,
       appearingTaskId: null,
 
-      firstIncompliteTaskId: () => get().tasks.find(task => !task.isDone)?.id,
-
       fetchTasks: async () => {
         const tasks = await tasksApi.getAll()
         set({ tasks }, false, { type: "setTasks", payload: tasks })
@@ -39,18 +37,16 @@ export const useTasksStore = create(devtools((set, get, api) => ({
       deleteTask: async (taskId) => {
         const ask = confirm("Вы действительно хотите удалить задачу?")
         if (ask) {
+          set({ disappearingTaskId: null })
+
           await tasksApi.delete(taskId)
           set({ disappearingTaskId: taskId })
 
           setTimeout(() => {
-            set(state => {
-              const filteredTasks = state.tasks.filter((task) => task.id !== taskId)
-
-              return {
-                tasks: filteredTasks,
-                disappearingTaskId: null,
-              }
-            }, false, { type: "tasks/delete", payload: taskId })
+            set(state => ({
+              tasks: state.tasks.filter((task) => task.id !== taskId),
+              disappearingTaskId: null,
+            }), false, { type: "tasks/delete", payload: taskId })
           }, 400)
         }
       },

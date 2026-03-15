@@ -8,7 +8,7 @@ const useFilteredTasks = () => {
 
   return clearSearchQuery.length > 0
     ? tasks.filter(({ title }) => title.toLowerCase().includes(clearSearchQuery))
-    : null
+    : tasks
 }
 
 export default useFilteredTasks

@@ -1,10 +1,13 @@
 import { memo, useMemo } from "react";
 import Button from "./Button";
-import { useTasksStore } from "@/store/index.js"
+import { useTasksStore } from "@/store"
+import useFilteredTasks from "@/hooks/useFilteredTasks.js"
 
 const TodoInfo = () => {
   const tasks = useTasksStore(state => state.tasks);
   const deleteAllTasks = useTasksStore(state => state.deleteAllTasks);
+
+  const filteredTasks = useFilteredTasks()
 
   const total = tasks.length;
   const hasTasks = total > 0;

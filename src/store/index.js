@@ -1,3 +1,3 @@
-import { useTasksStore } from "./TodoStore/TasksStore.jsx"
+import { useTasksStore } from "./TasksStore/TasksStore.jsx"
 
 export { useTasksStore }
