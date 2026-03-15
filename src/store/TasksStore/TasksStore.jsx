@@ -2,7 +2,7 @@ import { create } from "zustand"
 import tasksApi from "@/api/tasksAPI.js"
 import { devtools } from "zustand/middleware"
 
-export const useTasksStore = create(devtools((set, get, api) => ({
+export const useTasksStore = create(devtools((set, get) => ({
       tasks: [],
       searchTaskForm: "",
       disappearingTaskId: null,
