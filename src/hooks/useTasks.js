@@ -1,109 +1,104 @@
-import { useState, useMemo, useRef, useCallback, useEffect } from "react"
-import tasksApi from "../api/tasksAPI"
+import { useSelector, useDispatch } from "react-redux";
+import { useRef, useMemo, useCallback, useEffect } from "react";
+import * as tasksActions from "../store/actions/tasksActions";
+import tasksApi from "../api/tasksAPI";
 
 const useTasks = () => {
-  const [tasks, setTasks] = useState([])
-  const [searchTaskForm, setSearchTaskForm] = useState("")
-  const searchRef = useRef(null)
-  const firstIncompliteTaskRef = useRef(null)
-  const firstIncompliteTaskId = tasks.find(({ isDone }) => !isDone)?.id
+  const dispatch = useDispatch();
+  const searchRef = useRef(null);
+  const firstIncompliteTaskRef = useRef(null);
 
-  const [disappearingTaskId, setDisappearingTaskId] = useState(null)
-  const [appearingTaskId, setAppearingTaskId] = useState(null)
+  const tasks = useSelector(state => state?.tasks || []);
+  const searchTaskForm = useSelector(state => state?.searchTaskForm || "");
+  const disappearingTaskId = useSelector(state => state?.disappearingTaskId || null);
+  const appearingTaskId = useSelector(state => state?.appearingTaskId || null);
 
-  const addTask = useCallback((title, callbackAfterAdding) => {
-    const newTask = {
-      title,
-      isDone: false,
-    }
-
-    tasksApi.add(newTask).then((addTask) => {
-      setTasks((prev) => [...prev, addTask])
-      callbackAfterAdding()
-      setSearchTaskForm("")
-      searchRef.current.focus()
-      setAppearingTaskId(addTask.id)
-      setTimeout(() => setAppearingTaskId(null), 400)
-    })
-  }, [])
-
-  const deleteAllTasks = useCallback(() => {
-    const ask = confirm("Вы действительно хотите удалить все задачи?")
-    if (ask) {
-      tasksApi.deleteAll(tasks).then(() => setTasks([]))
-    }
-  }, [tasks])
-
-  const changeCheck = useCallback(
-    (taskId, isDone) => {
-      tasksApi.toggleComplete(taskId, isDone).then(() => {
-        setTasks(
-          tasks.map((task) => {
-            if (task.id === taskId) {
-              return { ...task, isDone }
-            }
-
-            return task
-          }),
-        )
-      })
-    },
-    [tasks],
-  )
-
-  useEffect(() => {
-    searchRef.current.focus()
-
-    tasksApi.getAll().then(setTasks)
-  }, [])
-
-  const deleteTask = useCallback(
-    (taskId) => {
-      const ask = confirm("Вы действительно хотите удалить задачу?")
-      if (ask) {
-        tasksApi.delete(taskId).then(() => {
-          setDisappearingTaskId(taskId)
-
-          setTimeout(() => {
-            setTasks(tasks.filter((task) => task.id !== taskId))
-            setDisappearingTaskId(null)
-          }, 400)
-        })
-      }
-    },
-    [tasks],
-  )
-
-  const searchTask = (e) => {
-    setSearchTaskForm(e.target.value)
-  }
+  const firstIncompliteTaskId = useMemo(() => {
+    if (!tasks || !Array.isArray(tasks)) return undefined;
+    return tasks.find(({ isDone }) => !isDone)?.id;
+  }, [tasks]);
 
   const filteredTasks = useMemo(() => {
-    const clearSearchQuery = searchTaskForm.trim().toLowerCase()
-
+    if (!tasks || !Array.isArray(tasks)) return null;
+    const clearSearchQuery = searchTaskForm.trim().toLowerCase();
     return clearSearchQuery.length > 0
       ? tasks.filter(({ title }) => title.toLowerCase().includes(clearSearchQuery))
-      : null
-  }, [searchTaskForm, tasks])
+      : null;
+  }, [searchTaskForm, tasks]);
+
+  const handleAddTask = useCallback((title, callbackAfterAdding) => {
+    tasksApi.add({ title, isDone: false }).then((newTask) => {
+      dispatch(tasksActions.addTaskSync(newTask));
+      dispatch(tasksActions.setAppearingTaskId(newTask.id));
+      dispatch(tasksActions.setSearchForm(""));
+
+      if (callbackAfterAdding) {
+        callbackAfterAdding();
+      }
+
+      setTimeout(() => {
+        dispatch(tasksActions.clearAppearingTaskId());
+      }, 400);
+    });
+  }, [dispatch]);
+
+  const handleDeleteTask = useCallback((taskId) => {
+    const ask = confirm("Вы действительно хотите удалить задачу?");
+    if (ask) {
+      dispatch(tasksActions.setDisappearingTaskId(taskId));
+      tasksApi.delete(taskId).then(() => {
+        dispatch(tasksActions.deleteTaskSync(taskId));
+
+        setTimeout(() => {
+          dispatch(tasksActions.clearDisappearingTaskId());
+        }, 400);
+      });
+    }
+  }, [dispatch]);
+
+  const handleDeleteAllTasks = useCallback(() => {
+    const ask = confirm("Вы действительно хотите удалить все задачи?");
+    if (ask) {
+      tasksApi.deleteAll(tasks).then(() => {
+        dispatch(tasksActions.deleteAllTasksSync());
+      });
+    }
+  }, [dispatch, tasks]);
+
+  const handleChangeCheck = useCallback((taskId, isDone) => {
+    tasksApi.toggleComplete(taskId, isDone).then(() => {
+      dispatch(tasksActions.toggleCompleteSync(taskId, isDone));
+    });
+  }, [dispatch]);
+
+  const handleSearchTask = useCallback((e) => {
+    dispatch(tasksActions.setSearchForm(e.target.value));
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (searchRef.current) {
+      searchRef.current.focus();
+    }
+    tasksApi.getAll().then((fetchedTasks) => {
+      dispatch(tasksActions.setTasks(fetchedTasks || []));
+    });
+  }, [dispatch]);
 
   return {
     filteredTasks,
     tasks,
     firstIncompliteTaskId,
     firstIncompliteTaskRef,
-    deleteTask,
-    deleteAllTasks,
-    changeCheck,
-
+    deleteTask: handleDeleteTask,
+    deleteAllTasks: handleDeleteAllTasks,
+    changeCheck: handleChangeCheck,
     disappearingTaskId,
     appearingTaskId,
-
-    searchTask,
-    setSearchTaskForm,
+    searchTask: handleSearchTask,
     searchTaskForm,
     searchRef,
-    addTask,
-  }
-}
+    addTask: handleAddTask,
+  };
+};
 
-export default useTasks
+export default useTasks;

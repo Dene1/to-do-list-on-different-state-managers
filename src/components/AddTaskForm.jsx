@@ -1,10 +1,10 @@
 import Field from "./Field";
 import Button from "./Button";
-import { useContext, useState } from "react";
-import { TodosContext } from "../TodosContext";
+import { useState } from "react";
+import useTasks from "../hooks/useTasks.js"
 
 const AddTaskForm = () => {
-  const { addTask, searchRef } = useContext(TodosContext);
+  const { addTask, searchRef } = useTasks()
   const [error, setError] = useState("");
   const [newTaskTitle, setNewTaskTitle] = useState("");
 

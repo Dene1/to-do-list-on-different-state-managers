@@ -3,12 +3,12 @@ import SearchTaskForm from "./SearchTaskForm";
 import TodoInfo from "./TodoInfo";
 import TodoList from "./TodoList";
 import ButtonShow from "./ButtonShow";
-import { TodosContext } from "../TodosContext";
 import { useContext } from "react";
 import { ThemeContext } from "../ThemeContext.jsx"
+import useTasks from "../hooks/useTasks.js"
 
 const Todo = () => {
-  const { firstIncompliteTaskRef } = useContext(TodosContext);
+  const { firstIncompliteTaskRef } = useTasks()
   const { theme, changeTheme } = useContext(ThemeContext);
   const onClickRef = () => firstIncompliteTaskRef.current?.scrollIntoView({ behavior: "smooth" });
 
@@ -17,7 +17,7 @@ const Todo = () => {
       <h1 className="todo__title">To Do List</h1>
       <button style={ { backgroundColor: theme === "dark" ? "gray" : "white" } }
               onClick={ changeTheme }
-              className={ ` todo__btn` }>
+              className="todo__btn">
         { theme === "dark" ? "🌙 Темная тема" : "☀️ Светлая тема" }
       </button>
       <AddTaskForm />

@@ -1,10 +1,9 @@
 import { memo, useMemo } from "react";
 import Button from "./Button";
-import { useContext } from "react";
-import { TodosContext } from "../TodosContext";
+import useTasks from "../hooks/useTasks.js"
 
 const TodoInfo = () => {
-  const { tasks, deleteAllTasks } = useContext(TodosContext);
+  const { tasks, deleteAllTasks } = useTasks()
 
   const total = tasks.length;
   const hasTasks = total > 0;

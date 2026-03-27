@@ -1,15 +1,15 @@
 import Todo from "../components/Todo"
-import { TodosProvider } from "../TodosContext"
 import ThemeContext from "../ThemeContext.jsx"
+import { Provider } from "react-redux"
+import store from "../store/TodoStore.js"
 
 const TasksPage = () => {
-
   return (
-    <TodosProvider>
+    <Provider store={ store }>
       <ThemeContext>
         <Todo />
       </ThemeContext>
-    </TodosProvider>
+    </Provider>
   )
 }
 

@@ -1,9 +1,7 @@
-import { useContext } from "react"
-import { TodosContext } from "../TodosContext"
+import useTasks from "../hooks/useTasks.js"
 
 const SearchTaskForm = () => {
-
-  const { searchTaskForm, searchTask } = useContext(TodosContext)
+  const { searchTaskForm, searchTask } = useTasks()
 
   return (
     <form className="todo__form">

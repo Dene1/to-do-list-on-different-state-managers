@@ -1,6 +1,5 @@
-import { useContext } from "react";
-import { TodosContext } from "../TodosContext";
 import RouterLink from "./RouterLink";
+import useTasks from "../hooks/useTasks.js"
 
 const TodoItem = ({ id, title, isDone }) => {
   const {
@@ -10,7 +9,7 @@ const TodoItem = ({ id, title, isDone }) => {
     firstIncompliteTaskId,
     appearingTaskId,
     disappearingTaskId,
-  } = useContext(TodosContext);
+  } = useTasks()
 
   return (
     <li

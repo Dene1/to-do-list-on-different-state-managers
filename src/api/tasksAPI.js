@@ -6,7 +6,7 @@ const headers = {
 
 const tasksApi = {
   getAll: () => fetch(URL).then((res) => res.json()),
-  getById: (id) => fetch(`${URL}/${id}`).then((res) => res.json()),
+  getById: (id) => fetch(`${ URL }/${ id }`).then((res) => res.json()),
   add: (task) => {
     return fetch(URL, {
       method: "POST",
@@ -15,9 +15,13 @@ const tasksApi = {
     }).then((res) => res.json())
   },
   deleteAll: (tasks) => Promise.all(tasks.map(({ id }) => tasksApi.delete(id))),
-  delete: (id) => fetch(`${URL}/${id}`, { method: "DELETE" }),
+  delete: (id) => fetch(`${ URL }/${ id }`, { method: "DELETE" }),
   toggleComplete: (id, isDone) =>
-    fetch(`${URL}/${id}`, { method: "PATCH", headers, body: JSON.stringify({ isDone }) }),
+    fetch(`${ URL }/${ id }`, {
+      method: "PATCH",
+      headers,
+      body: JSON.stringify({ isDone })
+    }),
 }
 
 export default tasksApi

@@ -1,9 +1,9 @@
-import { memo, useContext } from "react";
+import { memo } from "react";
 import TodoItem from "./TodoItem";
-import { TodosContext } from "../TodosContext";
+import useTasks from "../hooks/useTasks.js"
 
 const TodoList = () => {
-  const { tasks, filteredTasks } = useContext(TodosContext);
+  const { tasks, filteredTasks } = useTasks()
 
   const hasTasks = tasks.length > 0;
   const isEmptyFilteredTasks = filteredTasks?.length === 0;
